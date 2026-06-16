@@ -1,11 +1,6 @@
 name = "yapayzeka-solution"
 compatibility_date = "2024-01-01"
-
-[site]
-bucket = "./dist"
-
-[[pages_build_config]]
-commands = ["npm install", "npm run build"]
+pages_build_output_dir = "./dist"
 
 [vars]
 TELEGRAM_BOT_TOKEN = "8654463682:AAH1i9ZZtvctgE1W_8hLIaBy0KSGyqmatOE"
