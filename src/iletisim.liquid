@@ -73,7 +73,7 @@ permalink: /iletisim/
       <div>
         <div class="contact-form">
           <h3 style="margin-bottom: 1.5rem;">Mesaj Gönderin</h3>
-          <form action="https://formspree.io/f/your-form-id" method="POST">
+          <form id="contact-form">
             <div class="form-group">
               <label for="name">Adınız Soyadınız</label>
               <input type="text" id="name" name="name" required>
@@ -97,9 +97,49 @@ permalink: /iletisim/
             <button type="submit" class="btn-primary" style="width: 100%; border: none; cursor: pointer;">
               Mesaj Gönder
             </button>
+            <div id="form-message" style="margin-top: 1rem; display: none;"></div>
           </form>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const messageDiv = document.getElementById('form-message');
+  const submitBtn = form.querySelector('button[type="submit"]');
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Gönderiliyor...';
+  messageDiv.style.display = 'none';
+  
+  try {
+    const formData = new FormData(form);
+    const response = await fetch('/contact-form', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      messageDiv.style.color = '#10b981';
+      messageDiv.textContent = '✓ ' + result.message;
+      form.reset();
+    } else {
+      messageDiv.style.color = '#ef4444';
+      messageDiv.textContent = '✗ ' + result.error;
+    }
+  } catch (error) {
+    messageDiv.style.color = '#ef4444';
+    messageDiv.textContent = '✗ Bağlantı hatası. Lütfen WhatsApp üzerinden iletişime geçin.';
+  }
+  
+  messageDiv.style.display = 'block';
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Mesaj Gönder';
+});
+</script>
